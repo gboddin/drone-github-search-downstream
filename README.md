@@ -23,8 +23,8 @@ go build
 Build the Docker image with the following commands:
 
 ```
-GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -a -tags netgo -o release/linux/amd64/drone-downstream
-docker build --rm -t plugins/downstream .
+GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -a -tags netgo -o release/linux/amd64/github-search-downstream
+docker build --rm -t gboo/github-search-downstream .
 ```
 
 ## Usage
@@ -37,7 +37,7 @@ docker run --rm \
   -e PLUGIN_DRONE_TOKEN=eyJhbFciHiJISzI1EiIsUnR5cCW6IkpXQCJ9.ezH0ZXh0LjoidGJvZXJnZXIiLCJ0eXBlIjoidXNlciJ9.1m_3QFA6eA7h4wrBby2aIRFAEhQWPrlj4dsO_Gfchtc \
   -v $(pwd):$(pwd) \
   -w $(pwd) \
-  plugins/downstream
+  gboo/github-search-downstream
 ```
 
 From Drone:
@@ -45,7 +45,7 @@ From Drone:
 ```yaml
 pipeline:
   trigger-downstream:
-    image: gboddin/github-search-downstream
+    image: gboo/github-search-downstream
     github_query: "org:drone-plugins topic:drone-plugin"
     branch: master
     drone_server: https://hold-on.nobody.run
