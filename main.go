@@ -56,6 +56,11 @@ func main() {
 			Usage:  "Wait for any currently running builds to finish",
 			EnvVar: "PLUGIN_WAIT",
 		},
+		cli.BoolFlag{
+			Name:   "ignore-missing",
+			Usage:  "Ignore missing builds from Drone server",
+			EnvVar: "PLUGIN_IGNORE_MISSING",
+		},
 		cli.DurationFlag{
 			Name:   "timeout",
 			Value:  time.Duration(60) * time.Second,
@@ -93,6 +98,7 @@ func run(c *cli.Context) error {
 		Branch:         c.String("branch"),
 		Fork:           c.Bool("fork"),
 		Wait:           c.Bool("wait"),
+		IgnoreMissing:  c.Bool("ignore-missing"),
 		Timeout:        c.Duration("timeout"),
 		LastSuccessful: c.Bool("last-successful"),
 		Params:         c.StringSlice("params"),

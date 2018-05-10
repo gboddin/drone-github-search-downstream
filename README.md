@@ -49,5 +49,7 @@ pipeline:
     github_query: "org:drone-plugins topic:drone-plugin"
     branch: master
     drone_server: https://hold-on.nobody.run
+    ignore_missing: true
     secrets: [ github_token, drone_token ]
 ```
+

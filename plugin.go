@@ -25,6 +25,7 @@ type Plugin struct {
 	Branch         string
 	Fork           bool
 	Wait           bool
+	IgnoreMissing  bool
 	Timeout        time.Duration
 	LastSuccessful bool
 	Params         []string
@@ -112,6 +113,10 @@ func (p *Plugin) Exec() error {
 				if err != nil {
 					if waiting {
 						continue
+					}
+					if p.IgnoreMissing {
+						fmt.Printf("Error: unable to get latest build for %s, skipping\n", entry)
+						break I
 					}
 					return fmt.Errorf("Error: unable to get latest build for %s.\n", entry)
 				}
@@ -275,7 +280,7 @@ func populateGithubRepos(p *Plugin)   {
 				RepoName = fmt.Sprintf("%s@%s", *repo.FullName, p.Branch)
 			}
 			p.Repos = append(p.Repos, RepoName)
-			fmt.Println("Added ", RepoName, " to the downstream list")
+			fmt.Println("Added", RepoName, "to the downstream list.")
 		}
 	}
 
