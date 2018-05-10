@@ -39,7 +39,7 @@ func main() {
 		cli.StringFlag{
 			Name:   "drone-server",
 			Usage:  "Trigger a drone build on a custom server",
-			EnvVar: "GITHUB_SEARCH_DOWNSTREAM_DRONE_SERVER,PLUGIN_DRONE_SERVER",
+			EnvVar: "DRONE_SERVER,GITHUB_SEARCH_DOWNSTREAM_DRONE_SERVER,PLUGIN_DRONE_SERVER",
 		},
 		cli.StringFlag{
 			Name:   "drone-token",
