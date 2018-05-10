@@ -130,3 +130,13 @@ pipeline:
     dockerfile: Dockerfile.arm
     when:
       event: [ push, tag ]
+
+  manifests:
+    image: plugins/manifest:1
+    pull: true
+    secrets: [ docker_username, docker_password ]
+    spec: manifest.tmpl
+    auto_tag: true
+    ignore_missing: true
+    when:
+      event: [ push, tag ]
