@@ -1,6 +1,6 @@
 workspace:
   base: /go
-  path: src/github.com/drone-plugins/drone-downstream
+  path: src/github.com/gboo/github-search-downstream
 
 pipeline:
   deps:
@@ -29,9 +29,9 @@ pipeline:
     commands:
       - |
         if test "${DRONE_TAG}" = ""; then
-          go build -v -ldflags "-X main.build=${DRONE_BUILD_NUMBER}" -a -o release/linux/amd64/drone-downstream
+          go build -v -ldflags "-X main.build=${DRONE_BUILD_NUMBER}" -a -o release/linux/amd64/github-search-downstream
         else
-          go build -v -ldflags "-X main.version=${DRONE_TAG##v} -X main.build=${DRONE_BUILD_NUMBER}" -a -o release/linux/amd64/drone-downstream
+          go build -v -ldflags "-X main.version=${DRONE_TAG##v} -X main.build=${DRONE_BUILD_NUMBER}" -a -o release/linux/amd64/github-search-downstream
         fi
 
   build_linux_i386:
@@ -45,9 +45,9 @@ pipeline:
     commands:
       - |
         if test "${DRONE_TAG}" = ""; then
-          go build -v -ldflags "-X main.build=${DRONE_BUILD_NUMBER}" -a -o release/linux/i386/drone-downstream
+          go build -v -ldflags "-X main.build=${DRONE_BUILD_NUMBER}" -a -o release/linux/i386/github-search-downstream
         else
-          go build -v -ldflags "-X main.version=${DRONE_TAG##v} -X main.build=${DRONE_BUILD_NUMBER}" -a -o release/linux/i386/drone-downstream
+          go build -v -ldflags "-X main.version=${DRONE_TAG##v} -X main.build=${DRONE_BUILD_NUMBER}" -a -o release/linux/i386/github-search-downstream
         fi
 
   build_linux_arm64:
@@ -61,9 +61,9 @@ pipeline:
     commands:
       - |
         if test "${DRONE_TAG}" = ""; then
-          go build -v -ldflags "-X main.build=${DRONE_BUILD_NUMBER}" -a -o release/linux/arm64/drone-downstream
+          go build -v -ldflags "-X main.build=${DRONE_BUILD_NUMBER}" -a -o release/linux/arm64/github-search-downstream
         else
-          go build -v -ldflags "-X main.version=${DRONE_TAG##v} -X main.build=${DRONE_BUILD_NUMBER}" -a -o release/linux/arm64/drone-downstream
+          go build -v -ldflags "-X main.version=${DRONE_TAG##v} -X main.build=${DRONE_BUILD_NUMBER}" -a -o release/linux/arm64/github-search-downstream
         fi
 
   build_linux_arm:
@@ -78,9 +78,9 @@ pipeline:
     commands:
       - |
         if test "${DRONE_TAG}" = ""; then
-          go build -v -ldflags "-X main.build=${DRONE_BUILD_NUMBER}" -a -o release/linux/arm/drone-downstream
+          go build -v -ldflags "-X main.build=${DRONE_BUILD_NUMBER}" -a -o release/linux/arm/github-search-downstream
         else
-          go build -v -ldflags "-X main.version=${DRONE_TAG##v} -X main.build=${DRONE_BUILD_NUMBER}" -a -o release/linux/arm/drone-downstream
+          go build -v -ldflags "-X main.version=${DRONE_TAG##v} -X main.build=${DRONE_BUILD_NUMBER}" -a -o release/linux/arm/github-search-downstream
         fi
 
   publish_linux_amd64:
@@ -88,7 +88,7 @@ pipeline:
     pull: true
     secrets: [ docker_username, docker_password ]
     group: docker
-    repo: plugins/downstream
+    repo: gboo/github-search-downstream
     auto_tag: true
     auto_tag_suffix: linux-amd64
     dockerfile: Dockerfile
@@ -100,7 +100,7 @@ pipeline:
     pull: true
     secrets: [ docker_username, docker_password ]
     group: docker
-    repo: plugins/downstream
+    repo: gboo/github-search-downstream
     auto_tag: true
     auto_tag_suffix: linux-i386
     dockerfile: Dockerfile.i386
@@ -112,7 +112,7 @@ pipeline:
     pull: true
     secrets: [ docker_username, docker_password ]
     group: docker
-    repo: plugins/downstream
+    repo: gboo/github-search-downstream
     auto_tag: true
     auto_tag_suffix: linux-arm64
     dockerfile: Dockerfile.arm64
@@ -124,26 +124,9 @@ pipeline:
     pull: true
     secrets: [ docker_username, docker_password ]
     group: docker
-    repo: plugins/downstream
+    repo: gboo/github-search-downstream
     auto_tag: true
     auto_tag_suffix: linux-arm
     dockerfile: Dockerfile.arm
     when:
       event: [ push, tag ]
-
-  manifests:
-    image: plugins/manifest:1
-    pull: true
-    secrets: [ docker_username, docker_password ]
-    spec: manifest.tmpl
-    auto_tag: true
-    ignore_missing: true
-    when:
-      event: [ push, tag ]
-
-  microbadger:
-    image: plugins/webhook:1
-    pull: true
-    secrets: [ webhook_url ]
-    when:
-      status: [ success ]

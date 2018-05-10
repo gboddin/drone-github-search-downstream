@@ -9,13 +9,19 @@ import (
 	"github.com/drone/drone-go/drone"
 	"github.com/joho/godotenv"
 	"golang.org/x/oauth2"
+	"net/http"
+	"github.com/google/go-github/github"
+	"math"
+	"log"
 )
 
 // Plugin defines the Downstream plugin parameters.
 type Plugin struct {
 	Repos          []string
-	Server         string
-	Token          string
+	GithubQuery    string
+	GithubToken    string
+	DroneServer    string
+	DroneToken     string
 	Fork           bool
 	Wait           bool
 	Timeout        time.Duration
@@ -26,11 +32,15 @@ type Plugin struct {
 
 // Exec runs the plugin
 func (p *Plugin) Exec() error {
-	if len(p.Token) == 0 {
+	if len(p.GithubQuery) == 0 {
+		return fmt.Errorf("Error: you must provide a Github repo search query.")
+	}
+
+	if len(p.DroneToken) == 0 {
 		return fmt.Errorf("Error: you must provide your Drone access token.")
 	}
 
-	if len(p.Server) == 0 {
+	if len(p.DroneServer) == 0 {
 		return fmt.Errorf("Error: you must provide your Drone server.")
 	}
 
@@ -60,16 +70,19 @@ func (p *Plugin) Exec() error {
 		params[k] = v
 	}
 
+	populateGithubRepos(p)
+
+
 	config := new(oauth2.Config)
 
 	auther := config.Client(
 		oauth2.NoContext,
 		&oauth2.Token{
-			AccessToken: p.Token,
+			AccessToken: p.DroneToken,
 		},
 	)
 
-	client := drone.NewClient(p.Server, auther)
+	client := drone.NewClient(p.DroneServer, auther)
 
 	for _, entry := range p.Repos {
 
@@ -220,5 +233,57 @@ func logParams(params map[string]string, paramsEnv []string) {
 			}
 			fmt.Printf("  - %s: %s\n", k, v)
 		}
+	}
+}
+
+func populateGithubRepos(p *Plugin)   {
+	var tc *http.Client
+	if p.GithubToken != "" {
+		ts := oauth2.StaticTokenSource(
+			&oauth2.Token{AccessToken: p.GithubToken},
+		)
+		tc = oauth2.NewClient(oauth2.NoContext, ts)
+	}
+	client := github.NewClient(tc)
+
+	query := fmt.Sprintf(p.GithubQuery)
+
+	page := 1
+	maxPage := math.MaxInt32
+
+	opts := &github.SearchOptions{
+		Sort:  "updated",
+		Order: "desc",
+		ListOptions: github.ListOptions{
+			PerPage: 100,
+		},
+	}
+
+	for ; page <= maxPage; page++ {
+		opts.Page = page
+		result, response, err := client.Search.Repositories(oauth2.NoContext, query, opts)
+		wait(response)
+		if err != nil {
+			log.Fatal("FindRepos:", err)
+			break
+		}
+		maxPage = response.LastPage
+		for _, repo := range result.Repositories {
+			fmt.Println("Added ", *repo.FullName, " to the downstream list")
+			p.Repos = append(p.Repos, *repo.FullName)
+		}
+	}
+
+}
+
+func wait(response *github.Response) {
+	if response != nil && response.Remaining <= 1 {
+		gap := time.Duration(response.Reset.Local().Unix() - time.Now().Unix())
+		sleep := gap * time.Second
+		if sleep < 0 {
+			sleep = -sleep
+		}
+
+		time.Sleep(sleep)
 	}
 }

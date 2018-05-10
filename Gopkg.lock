@@ -20,6 +20,18 @@
   version = "v1.0.0"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/google/go-github"
+  packages = ["github"]
+  revision = "8ea2e2657df890db8fb434a9274799d641bd698c"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/google/go-querystring"
+  packages = ["query"]
+  revision = "53e6ce116135b80d037921a7fdd5138cf32d7a8a"
+
+[[projects]]
   name = "github.com/joho/godotenv"
   packages = ["."]
   revision = "a79fa1e548e2c689c241d10173efd51e5d689d5b"
@@ -81,6 +93,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "1e48873e7f3d8c28587a0b21c65bdd9a5592cf0287302255a1d3dbda66686f6a"
+  inputs-digest = "bb5363014cfdfa3fb49c5d152337052eb5fc5b17ff4e21bc6a700937b19eae78"
   solver-name = "gps-cdcl"
   solver-version = 1

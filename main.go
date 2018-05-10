@@ -16,25 +16,35 @@ var (
 
 func main() {
 	app := cli.NewApp()
-	app.Name = "downstream plugin"
-	app.Usage = "downstream plugin"
+	app.Name = "github search downstream plugin"
+	app.Usage = "github search downstream plugin"
 	app.Version = fmt.Sprintf("%s+%s", version, build)
 	app.Action = run
 	app.Flags = []cli.Flag{
-		cli.StringSliceFlag{
-			Name:   "repositories",
-			Usage:  "List of repositories to trigger",
-			EnvVar: "PLUGIN_REPOSITORIES",
+		cli.StringFlag{
+			Name:   "github-query",
+			Usage:  "Github repo search query",
+			EnvVar: "GITHUB_SEARCH_DOWNSTREAM_GITHUB_QUERY,PLUGIN_GITHUB_QUERY",
 		},
 		cli.StringFlag{
-			Name:   "server",
+			Name:   "github-token",
+			Usage:  "Github auth token",
+			EnvVar: "GITHUB_TOKEN,GITHUB_SEARCH_DOWNSTREAM_GITHUB_TOKEN,PLUGIN_GITHUB_TOKEN",
+		},
+		cli.StringFlag{
+			Name:   "branch",
+			Usage:  "Remote branch to trigger",
+			EnvVar: "GITHUB_SEARCH_DOWNSTREAM_BRANCH,PLUGIN_BRANCH",
+		},
+		cli.StringFlag{
+			Name:   "drone-server",
 			Usage:  "Trigger a drone build on a custom server",
-			EnvVar: "DOWNSTREAM_SERVER,PLUGIN_SERVER",
+			EnvVar: "GITHUB_SEARCH_DOWNSTREAM_DRONE_SERVER,PLUGIN_DRONE_SERVER",
 		},
 		cli.StringFlag{
-			Name:   "token",
+			Name:   "drone-token",
 			Usage:  "Drone API token from your user settings",
-			EnvVar: "DRONE_TOKEN,DOWNSTREAM_TOKEN,PLUGIN_TOKEN",
+			EnvVar: "DRONE_TOKEN,GITHUB_SEARCH_DOWNSTREAM_DRONE_TOKEN,PLUGIN_DRONE_TOKEN",
 		},
 		cli.BoolFlag{
 			Name:   "fork",
@@ -76,9 +86,10 @@ func main() {
 
 func run(c *cli.Context) error {
 	plugin := Plugin{
-		Repos:          c.StringSlice("repositories"),
-		Server:         c.String("server"),
-		Token:          c.String("token"),
+		GithubQuery:    c.String("github-query"),
+		GithubToken:    c.String("github-token"),
+		DroneServer:         c.String("drone-server"),
+		DroneToken:          c.String("drone-token"),
 		Fork:           c.Bool("fork"),
 		Wait:           c.Bool("wait"),
 		Timeout:        c.Duration("timeout"),

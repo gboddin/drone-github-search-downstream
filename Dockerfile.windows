@@ -1,12 +1,12 @@
 # escape=`
 FROM microsoft/nanoserver:10.0.14393.1593
 
-LABEL maintainer="Drone.IO Community <drone-dev@googlegroups.com>" `
-  org.label-schema.name="Drone Downstream" `
-  org.label-schema.vendor="Drone.IO Community" `
+LABEL maintainer="Gregory Boddin" \
+  org.label-schema.name="Drone Github Search Downstream" \
+  org.label-schema.vendor="Gregory Boddin" \
   org.label-schema.schema-version="1.0"
 
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
-ADD release\drone-downstream.exe c:\drone-downstream.exe
-ENTRYPOINT [ "c:\\drone-downstream.exe" ]
+ADD release\github-search-downstream.exe c:\github-search-downstream.exe
+ENTRYPOINT [ "c:\\github-search-downstream.exe" ]

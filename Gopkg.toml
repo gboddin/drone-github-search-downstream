@@ -18,6 +18,10 @@
   branch = "master"
   name = "golang.org/x/oauth2"
 
+[[constraint]]
+  branch = "master"
+  name = "github.com/google/go-github"
+
 [prune]
   go-tests = true
   unused-packages = true
