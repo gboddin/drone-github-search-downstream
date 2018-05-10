@@ -22,6 +22,7 @@ type Plugin struct {
 	GithubToken    string
 	DroneServer    string
 	DroneToken     string
+	Branch         string
 	Fork           bool
 	Wait           bool
 	Timeout        time.Duration
@@ -269,8 +270,12 @@ func populateGithubRepos(p *Plugin)   {
 		}
 		maxPage = response.LastPage
 		for _, repo := range result.Repositories {
-			fmt.Println("Added ", *repo.FullName, " to the downstream list")
-			p.Repos = append(p.Repos, *repo.FullName)
+			RepoName := *repo.FullName
+			if len(p.Branch) > 0 {
+				RepoName = fmt.Sprintf("%s@%s", *repo.FullName, p.Branch)
+			}
+			p.Repos = append(p.Repos, RepoName)
+			fmt.Println("Added ", RepoName, " to the downstream list")
 		}
 	}
 

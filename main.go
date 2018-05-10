@@ -88,8 +88,9 @@ func run(c *cli.Context) error {
 	plugin := Plugin{
 		GithubQuery:    c.String("github-query"),
 		GithubToken:    c.String("github-token"),
-		DroneServer:         c.String("drone-server"),
-		DroneToken:          c.String("drone-token"),
+		DroneServer:    c.String("drone-server"),
+		DroneToken:     c.String("drone-token"),
+		Branch:         c.String("branch"),
 		Fork:           c.Bool("fork"),
 		Wait:           c.Bool("wait"),
 		Timeout:        c.Duration("timeout"),
