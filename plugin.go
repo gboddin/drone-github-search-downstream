@@ -7,12 +7,12 @@ import (
 	"time"
 
 	"github.com/drone/drone-go/drone"
+	"github.com/google/go-github/github"
 	"github.com/joho/godotenv"
 	"golang.org/x/oauth2"
-	"net/http"
-	"github.com/google/go-github/github"
-	"math"
 	"log"
+	"math"
+	"net/http"
 )
 
 // Plugin defines the Downstream plugin parameters.
@@ -64,7 +64,6 @@ func (p *Plugin) Exec() error {
 	}
 
 	populateGithubRepos(p)
-
 
 	config := new(oauth2.Config)
 
@@ -218,7 +217,7 @@ func logParams(params map[string]string, paramsEnv []string) {
 	}
 }
 
-func populateGithubRepos(p *Plugin)   {
+func populateGithubRepos(p *Plugin) {
 	var tc *http.Client
 	if p.GithubToken != "" {
 		ts := oauth2.StaticTokenSource(
