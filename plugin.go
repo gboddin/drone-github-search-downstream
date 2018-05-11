@@ -23,7 +23,6 @@ type Plugin struct {
 	DroneServer    string
 	DroneToken     string
 	Branch         string
-	Fork           bool
 	Wait           bool
 	IgnoreMissing  bool
 	Timeout        time.Duration
@@ -48,14 +47,6 @@ func (p *Plugin) Exec() error {
 
 	if p.Wait && p.LastSuccessful {
 		return fmt.Errorf("Error: only one of wait and last_successful can be true; choose one")
-	}
-
-	if !p.Fork {
-		fmt.Fprintln(
-			os.Stderr,
-			"Warning: \"fork: false\" will be deprecated in future\n"+
-				"         set \"fork: true\" to disable this warning",
-		)
 	}
 
 	params, err := parseParams(p.Params)
@@ -143,32 +134,17 @@ func (p *Plugin) Exec() error {
 				}
 
 				if (build.Status != drone.StatusRunning && build.Status != drone.StatusPending) || !p.Wait {
-					if p.Fork {
-						// start a new  build
-						_, err = client.BuildFork(owner, name, build.Number, params)
-						if err != nil {
-							if waiting {
-								continue
-							}
-							return fmt.Errorf("Error: unable to trigger a new build for %s.\n", entry)
+					// start a new  build
+					_, err = client.BuildFork(owner, name, build.Number, params)
+					if err != nil {
+						if waiting {
+							continue
 						}
-						fmt.Printf("Starting new build %d for %s.\n", build.Number, entry)
-						logParams(params, p.ParamsEnv)
-						break I
-					} else {
-						// rebuild the latest build
-						_, err = client.BuildStart(owner, name, build.Number, params)
-						if err != nil {
-							if waiting {
-								continue
-							}
-							return fmt.Errorf("Error: unable to trigger build for %s.\n", entry)
-						}
-						fmt.Printf("Restarting build %d for %s\n", build.Number, entry)
-						logParams(params, p.ParamsEnv)
-
-						break I
+						return fmt.Errorf("Error: unable to trigger a new build for %s.\n", entry)
 					}
+					fmt.Printf("Starting new build %d for %s.\n", build.Number, entry)
+					logParams(params, p.ParamsEnv)
+					break I
 				}
 			}
 		}

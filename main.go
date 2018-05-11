@@ -47,11 +47,6 @@ func main() {
 			EnvVar: "DRONE_TOKEN,GITHUB_SEARCH_DOWNSTREAM_DRONE_TOKEN,PLUGIN_DRONE_TOKEN",
 		},
 		cli.BoolFlag{
-			Name:   "fork",
-			Usage:  "Trigger a new build for a repository",
-			EnvVar: "PLUGIN_FORK",
-		},
-		cli.BoolFlag{
 			Name:   "wait",
 			Usage:  "Wait for any currently running builds to finish",
 			EnvVar: "PLUGIN_WAIT",
@@ -96,7 +91,6 @@ func run(c *cli.Context) error {
 		DroneServer:    c.String("drone-server"),
 		DroneToken:     c.String("drone-token"),
 		Branch:         c.String("branch"),
-		Fork:           c.Bool("fork"),
 		Wait:           c.Bool("wait"),
 		IgnoreMissing:  c.Bool("ignore-missing"),
 		Timeout:        c.Duration("timeout"),
